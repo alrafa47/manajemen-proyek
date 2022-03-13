@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 // import
-use App\Models\Pegawai;
-use App\Models\Jabatan;
 use App\Models\User;
+use App\Models\Jabatan;
+use App\Models\Pegawai;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 use App\Http\Requests\StorePegawaiRequest;
 use App\Http\Requests\UpdatePegawaiRequest;
-use Illuminate\Database\QueryException;
 
 class PegawaiController extends Controller
 {
@@ -22,12 +23,11 @@ class PegawaiController extends Controller
         $jabatan = Jabatan::all();
         $pegawai = Pegawai::all(); // untuk mengambil semua data pegawai
         // return view('pegawai.index', compact('pegawai', 'jabatan'));
-        $data =[
+        $data = [
             'jabatan' => $jabatan,
             'pegawai' => $pegawai
         ];
-        return view('pegawai.index',$data);
-
+        return view('pegawai.index', $data);
     }
 
     /**
@@ -49,8 +49,8 @@ class PegawaiController extends Controller
     public function store(StorePegawaiRequest $request)
     {
         try {
-            DB::transaction(function () {
-                Pegawai::create([
+            DB::transaction(function () use ($request) {
+                $pegawai = Pegawai::create([
                     'nama_pegawai' => $request->input('nama_pegawai'),
                     'jenis_kelamin' => $request->input('jenis_kelamin'),
                     'alamat_pegawai' => $request->input('alamat_pegawai'),
@@ -58,10 +58,10 @@ class PegawaiController extends Controller
                     'kualifikasi' => $request->input('kualifikasi'),
                     'jabatan_id' => $request->input('jabatan'),
                 ]);
-                User::create([
-                    'email' =>$request->input('email_pegawai'),
-                    'password' =>$request->input('password'),
-                    'name' =>$request->input('username'),
+                $pegawai->user()->create([
+                    'email' => $request->input('email_pegawai'),
+                    'password' => $request->input('password'),
+                    'name' => $request->input('username'),
                 ]);
             });
 
@@ -89,9 +89,15 @@ class PegawaiController extends Controller
      * @param  \App\Models\Pegawai  $pegawai
      * @return \Illuminate\Http\Response
      */
-    public function edit(Pegawai $pegawai)
+    public function edit($id)
     {
-        //
+        $pegawai = Pegawai::findOrFail($id);
+        $jabatan = Jabatan::all();
+        $data = [
+            'pegawai' => $pegawai,
+            'jabatan' => $jabatan
+        ];
+        return view("pegawai.edit", $data);
     }
 
     /**
@@ -101,9 +107,28 @@ class PegawaiController extends Controller
      * @param  \App\Models\Pegawai  $pegawai
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePegawaiRequest $request, Pegawai $pegawai)
+    public function update(UpdatePegawaiRequest $request, $id)
     {
-        //
+        try {
+            DB::transaction(function () use ($request, $id) {
+                $pegawai = Pegawai::findOrFail($id);
+                $pegawai->nama_pegawai = $request->input('nama_pegawai');
+                $pegawai->jenis_kelamin = $request->input('jenis_kelamin');
+                $pegawai->alamat_pegawai = $request->input('alamat_pegawai');
+                $pegawai->tlp_pegawai = $request->input('tlp_pegawai');
+                $pegawai->kualifikasi = $request->input('kualifikasi');
+                $pegawai->jabatan_id = $request->input('jabatan');
+                $pegawai->save();
+                $pegawai->user->email = $request->input('email_pegawai');
+                $pegawai->user->password = $request->input('password');
+                $pegawai->user->name = $request->input('username');
+                $pegawai->user->save();
+            });
+            return redirect()->route('pegawai.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
+        } catch (QueryException $th) {
+            dd($th);
+            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' => 'data gagal diupdate']);
+        }
     }
 
     /**
@@ -116,6 +141,7 @@ class PegawaiController extends Controller
     {
         try {
             Pegawai::destroy($id);
+            User::where([['userable_id', $id], ['userable_type', User::class]])->delete();
             return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil dihapus']);
         } catch (QueryException $th) {
             dd($th);

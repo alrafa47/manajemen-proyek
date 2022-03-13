@@ -29,6 +29,7 @@ Route::get('/pegawai', [PegawaiController::class, 'index'])->name('pegawai.index
 Route::post('/pegawai', [PegawaiController::class, 'store'])->name('pegawai.store');
 Route::delete('/pegawai/{id}', [PegawaiController::class, 'destroy'])->name('pegawai.destroy');
 Route::get('/pegawai/{id}', [PegawaiController::class, 'edit'])->name('pegawai.edit');
+Route::put('/pegawai/{id}', [PegawaiController::class, 'update'])->name('pegawai.update');
 
 Route::get('/jabatan', [JabatanController::class, 'index'])->name('jabatan.index');
 Route::post('/jabatan', [JabatanController::class, 'store'])->name('jabatan.store');

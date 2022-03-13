@@ -13,7 +13,7 @@ class UpdatePegawaiRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,15 @@ class UpdatePegawaiRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nama_pegawai' => 'required|string',
+            'tlp_pegawai' => 'required',
+            'jenis_kelamin' => 'required',
+            'alamat_pegawai' => 'required',
+            'email_pegawai' => 'required|email',
+            'jabatan' => 'required',
+            'kualifikasi' => 'required',
+            'username' => 'required',
+            'password' => 'required',
         ];
     }
 }
