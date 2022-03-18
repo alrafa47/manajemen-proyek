@@ -40,3 +40,7 @@ Route::get('/bidangkeahlian', [BidangkeahlianController::class, 'index'])->name(
 Route::post('/bidangkeahlian', [BidangkeahlianController::class, 'store'])->name('bidangkeahlian.store');
 Route::delete('/bidangkeahlian/{id}', [BidangkeahlianController::class, 'destroy'])->name('bidangkeahlian.destroy');
 Route::get('/bidangkeahlian/{id}', [BidangkeahlianController::class, 'edit'])->name('bidangkeahlian.edit');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
