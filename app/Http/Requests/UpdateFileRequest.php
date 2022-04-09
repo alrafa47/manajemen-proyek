@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateFilesRequest extends FormRequest
+class UpdateFileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class UpdateFilesRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class UpdateFilesRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'created_by' => 'required|string',
+            'penugasan' => 'required',
+            'file' => 'required',
+            'acc' => 'required',
+            'deskripsi' => 'required',
         ];
     }
 }

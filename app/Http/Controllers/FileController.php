@@ -7,6 +7,7 @@ use App\Models\Penugasan;
 use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\UpdateFileRequest;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class FileController extends Controller
 {
@@ -45,18 +46,13 @@ class FileController extends Controller
     public function store(StoreFileRequest $request)
     {
         try {
-            DB::transaction(function () {
+            DB::transaction(function () use ($request){
                 File::create([
                     'created_by' => $request->input('created_by'),
                     'penugasan_id' => $request->input('penugasan'),
                     'file' => $request->input('file'),
                     'acc' => $request->input('acc'),
                     'deskripsi' => $request->input('deskripsi'),
-                ]);
-                User::create([
-                    'email' =>$request->input('email_pegawai'),
-                    'password' =>$request->input('password'),
-                    'name' =>$request->input('username'),
                 ]);
             });
 
@@ -84,9 +80,15 @@ class FileController extends Controller
      * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function edit(File $file)
+    public function edit($id)
     {
-        //
+        $file = File ::findOrfail ($id);
+        $penugasan = Penugasan::all();
+        $data =[
+        'file' => $file,
+        'penugasan' => $penugasan,
+    ];
+       return view ("file.edit", $data);
     }
 
     /**
@@ -96,9 +98,25 @@ class FileController extends Controller
      * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateFileRequest $request, File $file)
+    public function update(UpdateFileRequest $request, $id)
     {
-        //
+        try {
+            DB::transaction (function () use ($request, $id) {
+                $file = File::findOrFail($id);
+                $file->created_by = $request->input('created_by');
+                $file->penugasan_id = $request->input('penugasan');
+                $file->file = $request->input('file');
+                $file->acc = $request->input('acc');
+                $file->deskripsi = $request->input('deskripsi');
+                $file->save();
+
+            });
+
+            return redirect()->route('file.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
+        } catch (QueryException $th) {
+            dd($th);
+            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
+        }
     }
 
     /**
@@ -107,7 +125,7 @@ class FileController extends Controller
      * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function destroy(File $file)
+    public function destroy($id)
     {
         try {
             File::destroy($id);

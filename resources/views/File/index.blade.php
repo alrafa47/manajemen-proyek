@@ -16,13 +16,13 @@
         <form action="{{ route('file.store') }}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label for="exampleInputPassword1">Id</label>
                     <input type="text" class="form-control" id="exampleInputPassword1" name="id_file">
                     @error('id_file')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
-                </div>
+                </div> --}}
                 <div class="form-group">
                     <label for="exampleInputPassword1">Created By</label>
                     <input type="text" class="form-control" id="exampleInputPassword1" name="created_by">
@@ -75,7 +75,6 @@
             <thead>
             <tr>
                 <th>No</th>
-                <th>Id</th>
                 <th>Created By</th>
                 <th>Judul Tugas</th>
                 <th>File</th>
@@ -88,7 +87,6 @@
             @forelse ($file as $row )
                     <tr>
                         <td> {{ $loop->iteration }}</td>
-                        <td>{{$row->id}}</td>
                         <td>{{ $row->created_by }}</td>
                         <td>{{ $row->penugasan->judul_tugas }}</td>
                         <td>{{ $row->file }}</td>
