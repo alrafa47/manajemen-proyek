@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 // import
-use App\Models\Pegawai;
-use App\Models\Jabatan;
 use App\Models\User;
+use App\Models\Jabatan;
+use App\Models\Pegawai;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 use App\Http\Requests\StorePegawaiRequest;
 use App\Http\Requests\UpdatePegawaiRequest;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\Facades\DB;
 
 class PegawaiController extends Controller
 {
@@ -23,12 +23,11 @@ class PegawaiController extends Controller
         $jabatan = Jabatan::all();
         $pegawai = Pegawai::all(); // untuk mengambil semua data pegawai
         // return view('pegawai.index', compact('pegawai', 'jabatan'));
-        $data =[
+        $data = [
             'jabatan' => $jabatan,
             'pegawai' => $pegawai
         ];
-        return view('pegawai.index',$data);
-
+        return view('pegawai.index', $data);
     }
 
     /**
@@ -59,10 +58,10 @@ class PegawaiController extends Controller
                     'kualifikasi' => $request->input('kualifikasi'),
                     'jabatan_id' => $request->input('jabatan'),
                 ]);
-                $pegawai->user() -> create([
-                    'email' =>$request->input('email_pegawai'),
-                    'password' =>$request->input('password'),
-                    'name' =>$request->input('username'),
+                $pegawai->user()->create([
+                    'email' => $request->input('email_pegawai'),
+                    'password' => $request->input('password'),
+                    'name' => $request->input('username'),
                 ]);
             });
 
@@ -144,6 +143,7 @@ class PegawaiController extends Controller
     {
         try {
             Pegawai::destroy($id);
+            User::where([['userable_id', $id], ['userable_type', User::class]])->delete();
             return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil dihapus']);
         } catch (QueryException $th) {
             dd($th);

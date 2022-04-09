@@ -38,21 +38,21 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Alamat</label>
-                    <input type="text" class="form-control" value = "{{ old('alamat_pegawai', $pegawai->alamat_pegawai)}} id="exampleInputPassword1" name="alamat_pegawai">
+                    <input type="text" class="form-control" value = "{{ old('alamat_pegawai', $pegawai->alamat_pegawai)}} "id="exampleInputPassword1" name="alamat_pegawai">
                     @error('alamat_pegawai')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Telepon</label>
-                    <input type="text" class="form-control" value = "{{ old('tlp_pegawai', $pegawai->tlp_pegawai)}} id="exampleInputPassword1" name="tlp_pegawai">
+                    <input type="text" class="form-control" value = "{{ old('tlp_pegawai', $pegawai->tlp_pegawai)}} "id="exampleInputPassword1" name="tlp_pegawai">
                     @error('tlp_pegawai')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Email</label>
-                    <input type="text" class="form-control" value = "{{ old('email_pegawai', $pegawai->user->email)}} id="exampleInputPassword1" name="email_pegawai">
+                    <input type="text" class="form-control" value = "{{ old('email_pegawai', $pegawai->user->email)}} "id="exampleInputPassword1" name="email_pegawai">
                     @error('email_pegawai')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
@@ -74,14 +74,14 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Kualifikasi</label>
-                    <input type="text" class="form-control" value = "{{ old('kualifikasi', $pegawai->kualifikasi)}} id="exampleInputPassword1" name="kualifikasi">
+                    <input type="text" class="form-control" value = "{{ old('kualifikasi', $pegawai->kualifikasi)}} "id="exampleInputPassword1" name="kualifikasi">
                     @error('kualifikasi')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
                 </div>
                     <div class="form-group">
                     <label for="exampleInputPassword1">Username</label>
-                    <input type="text" class="form-control" value = "{{ old('username', $pegawai->user->name)}} id="exampleInputPassword1" name="username">
+                    <input type="text" class="form-control" value = "{{ old('username', $pegawai->user->name)}} "id="exampleInputPassword1" name="username">
                     @error('username')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror

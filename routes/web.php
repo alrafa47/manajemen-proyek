@@ -72,3 +72,7 @@ Route::delete('/proyek/{id}', [ProyekController::class, 'destroy'])->name('proye
 Route::get('/proyek/{id}', [ProyekController::class, 'edit'])->name('proyek.edit');
 Route::put('/proyek/{id}', [ProyekController::class, 'update'])->name('proyek.update');
 
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -28,5 +28,4 @@ class Pegawai extends Model
     {
         return $this->morphOne(User::class, 'userable');
     }
-
 }
