@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Jabatan;
 use App\Http\Requests\StoreJabatanRequest;
 use App\Http\Requests\UpdateJabatanRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class JabatanController extends Controller
 {
@@ -93,7 +95,7 @@ class JabatanController extends Controller
             DB::transaction (function () use ($request, $id) {
                 $jabatan = Jabatan::findOrFail($id);
                 $jabatan->nama_jabatan = $request->input('nama_jabatan');
-                // $jabatan->save();
+                $jabatan->save();
             });
 
             return redirect()->route('jabatan.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);

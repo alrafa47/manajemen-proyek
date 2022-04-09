@@ -113,8 +113,6 @@
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
                 </div>
-
-
                 <input type="submit" name="save" class="btn btn-primary" value="Save">
             </div>
             <!-- /.card-body -->
@@ -125,19 +123,11 @@
             <thead>
             <tr>
                 <th>No</th>
-                <th>Id Proyek</th>
                 <th>Nama Proyek</th>
                 <th>Tanggal Mulai</th>
                 <th>Tanggal Selesai</th>
-                <th>SPK</th>
-                <th>BAST</th>
-                <th>Kontrak Kerja</th>
                 <th>Nama Klien</th>
-                <th>Telepon Klien</th>
-                <th>Alamat Klien</th>
                 <th>Nama Leader</th>
-                <th>Laporan Pendahuluan</th>
-                <th>laporan Akhir</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -145,19 +135,14 @@
             @forelse ($proyek as $row )
                     <tr>
                         <td> {{ $loop->iteration }}</td>
-                        <td>{{$row->id}}</td>
                         <td>{{ $row->nama_proyek }}</td>
                         <td>{{ $row->tgl_mulai }}</td>
                         <td>{{ $row->tgl_selesai }}</td>
-                        <td>{{ $row->spk }}</td>
-                        <td>{{ $row->bast }}</td>
-                        <td>{{ $row->kontak_kerja }}</td>
-                        <td>{{ $row->nama_klien }}</td>
-                        <td>{{ $row->tlp_klien }}</td>
-                        <td>{{ $row->alamat_klien }}</td>
+                        <td>
+                            {{ $row->nama_klien }}
+                            <span>{{ $row->tlp_klien }}</span>
+                        </td>
                         <td>{{ $row->pegawai->nama_pegawai }}</td>
-                        <td>{{ $row->lap_pendahuluan }}</td>
-                        <td>{{ $row->lap_akhir }}</td>
 
                         <td>
                             <div class="btn-group">
@@ -168,6 +153,8 @@
                                         <button class="btn btn-danger">hapus</button>
                                     </form>
                                     <a class="btn btn-warning" href={{route('proyek.edit', ['id'=>$row->id])}}>ubah
+                                    </a>
+                                    <a class="btn btn-primary" href={{route('proyek.show', ['id'=>$row->id])}}>Detail
                                     </a>
                                 </div>
                             </div>
@@ -181,7 +168,7 @@
             </tbody>
         </table>
     </div>
-  </div>
+</div>
 
 
 @endsection

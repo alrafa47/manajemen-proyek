@@ -17,10 +17,23 @@
             @csrf
             <div class="card-body">
                 <div class="form-group">
+                    <label for="exampleInputPassword1">Nama Pegawai</label>
+                    <select class="form-control" name="pegawai">
+                        @forelse ($pegawai as $dataPegawai)
+                            <option value="{{ $dataPegawai->id }}">{{ $dataPegawai->nama_pegawai }}</option>
+                        @empty
+                            <option value="">Data Kosong</option>
+                        @endforelse
+                    </select>
+                    @error('pegawai')
+                        <span class="text-danger text-muted">{{ $message }}</span>
+                    @enderror
+                </div>
+                {{-- <div class="form-group">
                     <label for="exampleInputPassword1">Id Tugas </label>
                     <select class="form-control" name="tugas">
                         @forelse ($tugas as $dataTugas)
-                            <option value="{{ $dataTugas->id }}">{{ $dataTugas->id_tugas }}</option>
+                            <option value="{{ $dataTugas->id }}">{{ $dataTugas->tugas_id }}</option>
                         @empty
                             <option value="">Data Kosong</option>
                         @endforelse
@@ -28,7 +41,7 @@
                     @error('tugas')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
-                </div>
+                </div> --}}
                 <div class="form-group">
                     <label for="exampleInputPassword1">Judul Tugas</label>
                     <input type="text" class="form-control" id="exampleInputPassword1" name="judul_tugas">
@@ -54,7 +67,8 @@
             <thead>
             <tr>
                 <th>No</th>
-                <th>Id Tugas</th>
+                <th>Nama Pegawai</th>
+                {{-- <th>Id Tugas</th> --}}
                 <th>Judul Tugas</th>
                 <th>Deskripsi</th>
                 <th>Action</th>
@@ -64,9 +78,10 @@
             @forelse ($penugasan as $row )
                     <tr>
                         <td> {{ $loop->iteration }}</td>
-                        <td>{{ $row->tugas->id_tugas }}</td>
-                        <td>{{ $row->tugas }}</td>
-                        <td>{{ $row->deskripsi }}</td>
+                        <td>{{ $row->pegawai->nama_pegawai }}</td>
+                        {{-- <td>{{ $row->tugas->tugas_id }}</td> --}}
+                        <td>{{ $row->judul_tugas }}</td>
+                        <td>{{ $row->deskripsi_tugas }}</td>
 
                         <td>
                             <div class="btn-group">

@@ -9,12 +9,16 @@ class Penugasan extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    public function files()
+    public function file()
     {
-        return $this->hasMany(files::class);
+        return $this->hasMany(file::class);
     }
     public function tugas()
     {
         return $this->belongsTo(tugas::class);
+    }
+    public function pegawai()
+    {
+        return $this->belongsTo(pegawai::class);
     }
 }

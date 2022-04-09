@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Penugasan;
 use App\Models\Tugas;
+use App\Models\Pegawai;
+use App\Models\File;
 use App\Http\Requests\StorePenugasanRequest;
 use App\Http\Requests\UpdatePenugasanRequest;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class PenugasanController extends Controller
 {
@@ -18,11 +21,13 @@ class PenugasanController extends Controller
     public function index()
     {
         $penugasan = Penugasan::all();
-        $tugas = Tugas::all(); // untuk mengambil semua data tugas
+        $tugas = Tugas::all();
+        $pegawai = Pegawai::all(); // untuk mengambil semua data tugas
         // return view('tugas.index', compact('tugas', 'penugasan'));
         $data =[
             'penugasan' => $penugasan,
-            'tugas' => $tugas
+            'tugas' => $tugas,
+            'pegawai' => $pegawai
         ];
         return view('penugasan.index',$data);
     }
@@ -46,16 +51,12 @@ class PenugasanController extends Controller
     public function store(StorePenugasanRequest $request)
     {
         try {
-            DB::transaction(function () {
+            DB::transaction(function () use ($request) {
                 Penugasan::create([
+                    'pegawai_id' => $request->input('pegawai'),
                     'tugas_id' => $request->input('tugas'),
                     'judul_tugas' => $request->input('judul_tugas'),
                     'deskripsi_tugas' => $request->input('deskripsi_tugas'),
-                ]);
-                User::create([
-                    'email' =>$request->input('email_pegawai'),
-                    'password' =>$request->input('password'),
-                    'name' =>$request->input('username'),
                 ]);
             });
 
@@ -83,9 +84,19 @@ class PenugasanController extends Controller
      * @param  \App\Models\Penugasan  $penugasan
      * @return \Illuminate\Http\Response
      */
-    public function edit(Penugasan $penugasan)
+    public function edit($id)
     {
-        //
+        $penugasan = Penugasan ::findOrfail ($id);
+        $tugas = Tugas::all();
+        $file = File::all();
+        $pegawai = Pegawai::all();
+        $data =[
+        'penugasan' => $penugasan,
+        'tugas' => $tugas,
+        'file' => $file,
+        'pegawai' =>$pegawai
+    ];
+       return view ("penugasan.edit", $data);
     }
 
     /**
@@ -95,9 +106,24 @@ class PenugasanController extends Controller
      * @param  \App\Models\Penugasan  $penugasan
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdatePenugasanRequest $request, Penugasan $penugasan)
+    public function update(UpdatePenugasanRequest $request, $id)
     {
-        //
+        try {
+            DB::transaction (function () use ($request, $id) {
+                $penugasan = Penugasan::findOrFail($id);
+                $penugasan->pegawai_id = $request->input('pegawai');
+                $penugasan->tugas_id = $request->input('tugas');
+                $penugasan->judul_tugas = $request->input('judul_tugas');
+                $penugasan->deskripsi_tugas = $request->input('deskripsi_tugas');
+                $penugasan->save();
+            });
+
+            return redirect()->route('$penugasan.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
+        } catch (QueryException $th) {
+            dd($th);
+            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
+        }
+
     }
 
     /**
@@ -106,7 +132,7 @@ class PenugasanController extends Controller
      * @param  \App\Models\Penugasan  $penugasan
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Penugasan $penugasan)
+    public function destroy(Penugasan $penugasan, $id)
     {
         try {
             Penugasan::destroy($id);

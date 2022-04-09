@@ -37,19 +37,6 @@
                     @enderror
                 </div>
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Nama Pegawai</label>
-                    <select class="form-control" name="pegawai">
-                        @forelse ($pegawai as $dataPegawai)
-                            <option value="{{ $dataPegawai->id }}">{{ $dataPegawai->nama_pegawai }}</option>
-                        @empty
-                            <option value="">Data Kosong</option>
-                        @endforelse
-                    </select>
-                    @error('pegawai')
-                        <span class="text-danger text-muted">{{ $message }}</span>
-                    @enderror
-                </div>
-                <div class="form-group">
                     <label for="exampleInputPassword1">Nama Proyek</label>
                     <select class="form-control" name="proyek">
                         @forelse ($proyek as $dataProyek)
@@ -89,7 +76,6 @@
                 <th>No</th>
                 <th>Id</th>
                 <th>Bidang Keahlian</th>
-                <th>Nama Pegawai</th>
                 <th>Nama Proyek</th>
                 <th>Tanggal Mulai</th>
                 <th>Tanggal Selesai</th>
@@ -102,7 +88,6 @@
                         <td> {{ $loop->iteration }}</td>
                         <td>{{$row->id}}</td>
                         <td>{{ $row->bidangkeahlian->nama_bk }}</td>
-                        <td>{{ $row->pegawai->nama_pegawai }}</td>
                         <td>{{ $row->proyek->nama_proyek }}</td>
                         <td>{{ $row->tgl_mulai }}</td>
                         <td>{{ $row->tgl_selesai }}</td>

@@ -23,6 +23,10 @@ class Pegawai extends Model
     {
         return $this->hasMany(proyek::class);
     }
+    public function penugasan()
+    {
+        return $this->hasMany(penugasan::class);
+    }
 
     public function user()
     {

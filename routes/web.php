@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Pegawai;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\JabatanController;
 use App\Http\Controllers\BidangkeahlianController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\PenugasanController;
 use App\Http\Controllers\TugasController;
+use App\Http\Controllers\ProyekController;
 
 /*
 |--------------------------------------------------------------------------
@@ -71,6 +71,7 @@ Route::post('/proyek', [ProyekController::class, 'store'])->name('proyek.store')
 Route::delete('/proyek/{id}', [ProyekController::class, 'destroy'])->name('proyek.destroy');
 Route::get('/proyek/{id}', [ProyekController::class, 'edit'])->name('proyek.edit');
 Route::put('/proyek/{id}', [ProyekController::class, 'update'])->name('proyek.update');
+Route::get('/proyeks/{id}', [ProyekController::class, 'show'])->name('proyek.show');
 
 
 Auth::routes();

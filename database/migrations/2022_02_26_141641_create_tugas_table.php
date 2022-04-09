@@ -16,7 +16,6 @@ class CreateTugasTable extends Migration
         Schema::create('tugas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('bidangkeahlian_id')->references('id')->on('bidangkeahlians');
-            $table->foreignId('pegawai_id')->references('id')->on('pegawais');
             $table->foreignId('proyek_id')->references('id')->on('proyeks');
             $table->date('tgl_mulai');
             $table->date('tgl_selesai');

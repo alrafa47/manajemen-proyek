@@ -25,7 +25,6 @@ class StoreTugasRequest extends FormRequest
     {
         return [
             'bidangkeahlian' => 'required',
-            'pegawai' => 'required',
             'proyek' => 'required',
             'tgl_mulai' => 'required|date',
             'tgl_selesai' => 'required|date',

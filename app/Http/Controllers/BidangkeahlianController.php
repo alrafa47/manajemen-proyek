@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Bidangkeahlian;
 use App\Http\Requests\StoreBidangkeahlianRequest;
 use App\Http\Requests\UpdateBidangkeahlianRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class BidangkeahlianController extends Controller
 {
@@ -93,7 +95,7 @@ class BidangkeahlianController extends Controller
             DB::transaction (function () use ($request, $id) {
                 $bidangkeahlian = Bidangkeahlian::findOrFail($id);
                 $bidangkeahlian->nama_bk = $request->input('nama_bk');
-                // $bidangkeahlian->save();
+                $bidangkeahlian->save();
             });
 
             return redirect()->route('bidangkeahlian.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);

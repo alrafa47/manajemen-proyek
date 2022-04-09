@@ -13,9 +13,9 @@ class Tugas extends Model
     {
         return $this->belongsTo(bidangkeahlian::class);
     }
-    public function proyeks()
+    public function proyek()
     {
-        return $this->belongsTo(proyeks::class);
+        return $this->belongsTo(Proyek::class);
     }
     public function penugasan()
     {

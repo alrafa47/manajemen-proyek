@@ -15,6 +15,7 @@ class CreatePenugasansTable extends Migration
     {
         Schema::create('penugasans', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('pegawai_id')->references('id')->on('pegawais');
             $table->foreignId('tugas_id')->references('id')->on('tugas');
             $table->string('judul_tugas', 50);
             $table->string('deskripsi_tugas', 50);

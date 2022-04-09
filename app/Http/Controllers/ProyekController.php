@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Proyek;
 use App\Models\Pegawai;
+use App\Models\Tugas;
 use App\Http\Requests\StoreProyekRequest;
 use App\Http\Requests\UpdateProyekRequest;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class ProyekController extends Controller
 {
@@ -47,7 +49,7 @@ class ProyekController extends Controller
     public function store(StoreProyekRequest $request)
     {
         try {
-            DB::transaction(function () {
+            DB::transaction(function () use ($request)  {
                 Proyek::create([
                     'nama_proyek' => $request->input('nama_proyek'),
                     'tgl_mulai' => $request->input('tgl_mulai'),
@@ -62,7 +64,7 @@ class ProyekController extends Controller
                     'lap_pendahuluan' => $request->input('lap_pendahuluan'),
                     'lap_akhir' => $request->input('lap_akhir'),
                 ]);
-
+            });
 
             return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil ditambahkan']);
         } catch (QueryException $th) {
@@ -88,9 +90,17 @@ class ProyekController extends Controller
      * @param  \App\Models\Proyek  $proyek
      * @return \Illuminate\Http\Response
      */
-    public function edit(Proyek $proyek)
+    public function edit($id)
     {
-        //
+        $proyek = Proyek ::findOrfail ($id);
+        $pegawai = Pegawai::all();
+        $tugas = tugas::all();
+        $data =[
+        'proyek' => $proyek,
+        'pegawai' => $pegawai,
+        'tugas' => $tugas,
+    ];
+       return view ("proyek.edit", $data);
     }
 
     /**
@@ -100,9 +110,33 @@ class ProyekController extends Controller
      * @param  \App\Models\Proyek  $proyek
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateProyekRequest $request, Proyek $proyek)
+    public function update(UpdateProyekRequest $request, $id)
     {
-        //
+        try {
+            DB::transaction (function () use ($request, $id) {
+                $proyek = Proyek::findOrFail($id);
+                $proyek->nama_proyek = $request->input('nama_proyek');
+                $proyek->tgl_mulai = $request->input('tgl_mulai');
+                $proyek->tgl_selesai = $request->input('tgl_selesai');
+                $proyek->spk = $request->input('spk');
+                $proyek->bast = $request->input('bast');
+                $proyek->kontrak_kerja = $request->input('kontrak_kerja');
+                $proyek->nama_klien = $request->input('nama_klien');
+                $proyek->tlp_klien = $request->input('tlp_klien');
+                $proyek->alamat_klien = $request->input('alamat_klien');
+                $proyek->pegawai_id = $request->input('pegawai');
+                $proyek->lap_pendahuluan = $request->input('lap_pendahuluan');
+                $proyek->lap_akhir = $request->input('lap_akhir');
+                $proyek->save();
+
+            });
+
+            return redirect()->route('proyek.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
+        } catch (QueryException $th) {
+            dd($th);
+            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
+        }
+
     }
 
     /**
@@ -111,7 +145,7 @@ class ProyekController extends Controller
      * @param  \App\Models\Proyek  $proyek
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Proyek $proyek)
+    public function destroy($id)
     {
         try {
             Proyek::destroy($id);

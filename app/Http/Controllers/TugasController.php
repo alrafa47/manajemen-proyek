@@ -6,10 +6,10 @@ use App\Models\Tugas;
 use App\Models\Bidangkeahlian;
 use App\Models\Proyek;
 use App\Models\Penugasan;
-use App\Models\Pegawai;
 use App\Http\Requests\StoreTugasRequest;
 use App\Http\Requests\UpdateTugasRequest;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\DB;
 
 class TugasController extends Controller
 {
@@ -20,18 +20,17 @@ class TugasController extends Controller
      */
     public function index()
     {
-        $tugas = Tugas::all();
+        $tugas = Tugas::with('proyek')->get();
         $bidangkeahlian = Bidangkeahlian::all();
         $proyek = Proyek::all();
-        $penugasan = Penugasan::all();
-        $pegawai = Pegawai::all(); // untuk mengambil semua data pegawai
+        $penugasan = Penugasan::all(); // untuk mengambil semua data pegawai
         // return view('pegawai.index', compact('pegawai', 'jabatan'));
         $data =[
             'tugas' => $tugas,
             'bidangkeahlian' => $bidangkeahlian,
             'proyek' => $proyek,
             'penugasan' => $penugasan,
-            'pegawai' => $pegawai
+
         ];
         return view('tugas.index',$data);
     }
@@ -55,18 +54,12 @@ class TugasController extends Controller
     public function store(StoreTugasRequest $request)
     {
         try {
-            DB::transaction(function () {
+            DB::transaction(function () use ($request) {
                 Tugas::create([
-                    'bidangkeahlian' => $request->input('nama_bk'),
-                    'pegawai_id' => $request->input('pegawai'),
+                    'bidangkeahlian_id' => $request->input('bidangkeahlian'),
                     'proyek_id' => $request->input('proyek'),
                     'tgl_mulai' => $request->input('tgl_mulai'),
                     'tgl_selesai' => $request->input('tgl_selesai'),
-                ]);
-                User::create([
-                    'email' =>$request->input('email_pegawai'),
-                    'password' =>$request->input('password'),
-                    'name' =>$request->input('username'),
                 ]);
             });
 
@@ -77,6 +70,7 @@ class TugasController extends Controller
         }
     }
 
+
     /**
      * Display the specified resource.
      *
@@ -85,7 +79,7 @@ class TugasController extends Controller
      */
     public function show(Tugas $tugas)
     {
-        //
+
     }
 
     /**
@@ -94,9 +88,19 @@ class TugasController extends Controller
      * @param  \App\Models\Tugas  $tugas
      * @return \Illuminate\Http\Response
      */
-    public function edit(Tugas $tugas)
+    public function edit($id)
     {
-        //
+        $tugas = Tugas ::findOrfail ($id);
+        $bidangkeahlian = Bidangkeahlian::all();
+        $proyek = Proyek::all();
+        $penugasan = Penugasan::all();
+        $data =[
+        'tugas' => $tugas,
+        'bidangkeahlian' => $bidangkeahlian,
+        'proyek' => $proyek,
+        'penugasan' => $penugasan,
+    ];
+       return view ("tugas.edit", $data);
     }
 
     /**
@@ -106,9 +110,25 @@ class TugasController extends Controller
      * @param  \App\Models\Tugas  $tugas
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateTugasRequest $request, Tugas $tugas)
+    public function update(UpdateTugasRequest $request, $id)
     {
-        //
+        try {
+            DB::transaction (function () use ($request, $id) {
+                $tugas = Tugas::findOrFail($id);
+                $tugas->bidangkeahlian_id = $request->input('bidangkeahlian');
+                $tugas->proyek_id = $request->input('proyek');
+                $tugas->tgl_mulai = $request->input('tgl_mulai');
+                $tugas->tgl_selesai = $request->input('tgl_selesai');
+                $tugas->save();
+
+            });
+
+            return redirect()->route('tugas.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
+        } catch (QueryException $th) {
+            dd($th);
+            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
+        }
+
     }
 
     /**
@@ -117,7 +137,7 @@ class TugasController extends Controller
      * @param  \App\Models\Tugas  $tugas
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Tugas $tugas)
+    public function destroy($id)
     {
         try {
             Tugas::destroy($id);
