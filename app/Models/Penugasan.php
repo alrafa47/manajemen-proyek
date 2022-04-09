@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Penugasan extends Model
 {
     use HasFactory;
+    protected $guarded = [];
     public function files()
     {
         return $this->hasMany(files::class);

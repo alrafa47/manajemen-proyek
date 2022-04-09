@@ -13,19 +13,14 @@
                 {{ session('pesan')->message }}
             </div>
         @endif
-        <form action="{{ route('pegawai.store') }}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
+        <form action="{{ route('pegawai.update', ['id'=>$pegawai -> id]) }}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
             @csrf
+            @method ('put')
             <div class="card-body">
                 <div class="form-group">
-                    <label for="exampleInputPassword1">Id</label>
-                    <input type="text" class="form-control" id="exampleInputPassword1" name="id_pegawai">
-                    @error('id_pegawai')
-                        <span class="text-danger text-muted">{{ $message }}</span>
-                    @enderror
-                </div>
-                <div class="form-group">
                     <label for="exampleInputPassword1">Nama</label>
-                    <input type="text" class="form-control" id="exampleInputPassword1" name="nama_pegawai">
+                    <input type="text" class="form-control" id="exampleInputPassword1"
+                    value = "{{ old('nama_pegawai', $pegawai->nama_pegawai)}} " name="nama_pegawai">
                     @error('nama_pegawai')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
@@ -33,9 +28,9 @@
                 <div class="form-group">
                     <label for="exampleInputPassword1">Jenis Kelamin</label>
                     <select class="form-control" name="jenis_kelamin">
-                    <option>--Pilih Jenis Kelamin--</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
+                    <option >--Pilih Jenis Kelamin--</option>
+                    <option {{ $pegawai->jenis_kelamin == 'Laki-laki' ? 'selected' : ''}} value="Laki-laki">Laki-laki</option>
+                    <option {{ $pegawai->jenis_kelamin == 'Perempuan' ? 'selected' : ''}} value="Perempuan">Perempuan</option>
                     </select>
                     @error('jenis_kelamin')
                         <span class="text-danger text-muted">{{ $message }}</span>
@@ -43,21 +38,21 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Alamat</label>
-                    <input type="text" class="form-control" id="exampleInputPassword1" name="alamat_pegawai">
+                    <input type="text" class="form-control" value = "{{ old('alamat_pegawai', $pegawai->alamat_pegawai)}} id="exampleInputPassword1" name="alamat_pegawai">
                     @error('alamat_pegawai')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Telepon</label>
-                    <input type="text" class="form-control" id="exampleInputPassword1" name="tlp_pegawai">
+                    <input type="text" class="form-control" value = "{{ old('tlp_pegawai', $pegawai->tlp_pegawai)}} id="exampleInputPassword1" name="tlp_pegawai">
                     @error('tlp_pegawai')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Email</label>
-                    <input type="text" class="form-control" id="exampleInputPassword1" name="email_pegawai">
+                    <input type="text" class="form-control" value = "{{ old('email_pegawai', $pegawai->user->email)}} id="exampleInputPassword1" name="email_pegawai">
                     @error('email_pegawai')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
@@ -66,7 +61,9 @@
                     <label for="exampleInputPassword1">Jabatan </label>
                     <select class="form-control" name="jabatan">
                         @forelse ($jabatan as $dataJabatan)
-                            <option value="{{ $dataJabatan->id }}">{{ $dataJabatan->nama_jabatan }}</option>
+                            <option value="{{ $dataJabatan->id }}"
+                            {{ $pegawai->jabatan_id == $dataJabatan->id ? 'selected' : ''}}>
+                            {{ $dataJabatan->nama_jabatan }}</option>
                         @empty
                             <option value="">Data Kosong</option>
                         @endforelse
@@ -77,21 +74,21 @@
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Kualifikasi</label>
-                    <input type="text" class="form-control" id="exampleInputPassword1" name="kualifikasi">
+                    <input type="text" class="form-control" value = "{{ old('kualifikasi', $pegawai->kualifikasi)}} id="exampleInputPassword1" name="kualifikasi">
                     @error('kualifikasi')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
                 </div>
                     <div class="form-group">
                     <label for="exampleInputPassword1">Username</label>
-                    <input type="text" class="form-control" id="exampleInputPassword1" name="username">
+                    <input type="text" class="form-control" value = "{{ old('username', $pegawai->user->name)}} id="exampleInputPassword1" name="username">
                     @error('username')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
                 </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+                    <input type="password" class="form-control"  id="exampleInputPassword1" name="password">
                     @error('password')
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
@@ -100,51 +97,7 @@
             </div>
             <!-- /.card-body -->
         </form>
-        <hr>
-        <h3>List Pegawai</h3>
-        <table id="example1" class="table table-bordered table-striped responsive">
-            <thead>
-            <tr>
-                <th>No</th>
-                <th>Id</th>
-                <th>Nama</th>
-                <th>Telepon</th>
-                <th>Jabatan</th>
-                <th>Kualifikasi</th>
-                <th>Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            @forelse ($pegawai as $row )
-                    <tr>
-                        <td> {{ $loop->iteration }}</td>
-                        <td>{{$row->id}}</td>
-                        <td>{{ $row->nama_pegawai }}</td>
-                        <td>{{ $row->tlp_pegawai }}</td>
-                        <td>{{ $row->jabatan->nama_jabatan }}</td>
-                        <td>{{ $row->kualifikasi }}</td>
 
-                        <td>
-                            <div class="btn-group">
-                                <div class="d-flex">
-                                    <form action={{route('pegawai.destroy', ['id'=>$row->id])}} method="POST">
-                                        @csrf
-                                        @method('delete')
-                                        <button class="btn btn-danger">hapus</button>
-                                    </form>
-                                    <a class="btn btn-warning" href={{route('pegawai.edit', ['id'=>$row->id])}}>ubah
-                                    </a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-            @empty
-                    <tr>
-                        <td colspan="7"> Data Pegawai Kosong</td>
-                    </tr>
-            @endforelse
-            </tbody>
-        </table>
     </div>
   </div>
 

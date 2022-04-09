@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Tugas extends Model
 {
     use HasFactory;
+    protected $guarded = [];
     public function bidangkeahlian()
     {
         return $this->belongsTo(bidangkeahlian::class);
@@ -19,5 +20,9 @@ class Tugas extends Model
     public function penugasan()
     {
         return $this->hasMany(penugasan::class);
+    }
+    public function pegawai()
+    {
+        return $this->belongsTo(pegawai::class);
     }
 }

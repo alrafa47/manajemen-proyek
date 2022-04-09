@@ -15,7 +15,13 @@ class BidangkeahlianController extends Controller
      */
     public function index()
     {
-        //
+        $bidangkeahlian = Bidangkeahlian::all(); // untuk mengambil semua data pegawai
+        $data =[
+            'bidangkeahlian' => $bidangkeahlian,
+
+        ];
+        return view('bidangkeahlian.index',$data);
+
     }
 
     /**
@@ -36,7 +42,16 @@ class BidangkeahlianController extends Controller
      */
     public function store(StoreBidangkeahlianRequest $request)
     {
-        //
+        try {
+            Bidangkeahlian::create([
+                'nama_bk' => $request->input('nama_bk'),
+            ]);
+
+        return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil ditambahkan']);
+    } catch (QueryException $th) {
+        dd($th);
+        // return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal ditambahkan']);
+    }
     }
 
     /**
@@ -56,9 +71,13 @@ class BidangkeahlianController extends Controller
      * @param  \App\Models\Bidangkeahlian  $bidangkeahlian
      * @return \Illuminate\Http\Response
      */
-    public function edit(Bidangkeahlian $bidangkeahlian)
+    public function edit($id)
     {
-        //
+        $bidangkeahlian = Bidangkeahlian ::findOrfail ($id);
+        $data =[
+        'bidangkeahlian' => $bidangkeahlian
+    ];
+       return view ("bidangkeahlian.edit", $data);
     }
 
     /**
@@ -68,9 +87,20 @@ class BidangkeahlianController extends Controller
      * @param  \App\Models\Bidangkeahlian  $bidangkeahlian
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateBidangkeahlianRequest $request, Bidangkeahlian $bidangkeahlian)
+    public function update(UpdateBidangkeahlianRequest $request, $id)
     {
-        //
+        try {
+            DB::transaction (function () use ($request, $id) {
+                $bidangkeahlian = Bidangkeahlian::findOrFail($id);
+                $bidangkeahlian->nama_bk = $request->input('nama_bk');
+                // $bidangkeahlian->save();
+            });
+
+            return redirect()->route('bidangkeahlian.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
+        } catch (QueryException $th) {
+            dd($th);
+            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
+        }
     }
 
     /**
@@ -79,8 +109,14 @@ class BidangkeahlianController extends Controller
      * @param  \App\Models\Bidangkeahlian  $bidangkeahlian
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Bidangkeahlian $bidangkeahlian)
+    public function destroy($id)
     {
-        //
+        try {
+            Bidangkeahlian::destroy($id);
+            return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil dihapus']);
+        } catch (QueryException $th) {
+            dd($th);
+            // return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal ditambahkan']);
+        }
     }
 }

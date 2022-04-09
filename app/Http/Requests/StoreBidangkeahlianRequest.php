@@ -13,7 +13,7 @@ class StoreBidangkeahlianRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class StoreBidangkeahlianRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nama_bk' => 'required|string',
         ];
     }
 }

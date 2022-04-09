@@ -13,7 +13,7 @@ class StorePenugasanRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,10 @@ class StorePenugasanRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'tugas' => 'required|numeric',
+            'judul_tugas' => 'required',
+            'deskripsi_tugas' => 'required',
+
         ];
     }
 }

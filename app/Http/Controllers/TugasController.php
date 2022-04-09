@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tugas;
+use App\Models\Bidangkeahlian;
+use App\Models\Proyek;
+use App\Models\Penugasan;
+use App\Models\Pegawai;
 use App\Http\Requests\StoreTugasRequest;
 use App\Http\Requests\UpdateTugasRequest;
+use Illuminate\Database\QueryException;
 
 class TugasController extends Controller
 {
@@ -15,7 +20,20 @@ class TugasController extends Controller
      */
     public function index()
     {
-        //
+        $tugas = Tugas::all();
+        $bidangkeahlian = Bidangkeahlian::all();
+        $proyek = Proyek::all();
+        $penugasan = Penugasan::all();
+        $pegawai = Pegawai::all(); // untuk mengambil semua data pegawai
+        // return view('pegawai.index', compact('pegawai', 'jabatan'));
+        $data =[
+            'tugas' => $tugas,
+            'bidangkeahlian' => $bidangkeahlian,
+            'proyek' => $proyek,
+            'penugasan' => $penugasan,
+            'pegawai' => $pegawai
+        ];
+        return view('tugas.index',$data);
     }
 
     /**
@@ -36,7 +54,27 @@ class TugasController extends Controller
      */
     public function store(StoreTugasRequest $request)
     {
-        //
+        try {
+            DB::transaction(function () {
+                Tugas::create([
+                    'bidangkeahlian' => $request->input('nama_bk'),
+                    'pegawai_id' => $request->input('pegawai'),
+                    'proyek_id' => $request->input('proyek'),
+                    'tgl_mulai' => $request->input('tgl_mulai'),
+                    'tgl_selesai' => $request->input('tgl_selesai'),
+                ]);
+                User::create([
+                    'email' =>$request->input('email_pegawai'),
+                    'password' =>$request->input('password'),
+                    'name' =>$request->input('username'),
+                ]);
+            });
+
+            return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil ditambahkan']);
+        } catch (QueryException $th) {
+            dd($th);
+            // return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal ditambahkan']);
+        }
     }
 
     /**
@@ -81,6 +119,12 @@ class TugasController extends Controller
      */
     public function destroy(Tugas $tugas)
     {
-        //
+        try {
+            Tugas::destroy($id);
+            return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil dihapus']);
+        } catch (QueryException $th) {
+            dd($th);
+            // return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal ditambahkan']);
+        }
     }
 }

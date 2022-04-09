@@ -24,4 +24,9 @@ class Pegawai extends Model
         return $this->hasMany(proyek::class);
     }
 
+    public function user()
+    {
+        return $this->morphOne(User::class, 'userable');
+    }
+
 }

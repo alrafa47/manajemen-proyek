@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Jabatan;
-use App\Http\Requests\StoreJabatanRequest;
-use App\Http\Requests\UpdateJabatanRequest;
+use App\Models\File;
+use App\Models\Penugasan;
+use App\Http\Requests\StoreFileRequest;
+use App\Http\Requests\UpdateFileRequest;
+use Illuminate\Database\QueryException;
 
-class JabatanController extends Controller
+class FileController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,13 +17,13 @@ class JabatanController extends Controller
      */
     public function index()
     {
-        $jabatan = Jabatan::all(); // untuk mengambil semua data jabatan
+        $file = File::all();
+        $penugasan = Penugasan::all();
         $data =[
-            'jabatan' => $jabatan,
-
+            'file' => $file,
+            'penugasan' => $penugasan
         ];
-        return view('jabatan.index',$data);
-
+        return view('file.index',$data);
     }
 
     /**
@@ -37,15 +39,26 @@ class JabatanController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreJabatanRequest  $request
+     * @param  \App\Http\Requests\StoreFileRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreJabatanRequest $request)
+    public function store(StoreFileRequest $request)
     {
         try {
-                Jabatan::create([
-                    'nama_jabatan' => $request->input('nama_jabatan'),
+            DB::transaction(function () {
+                File::create([
+                    'created_by' => $request->input('created_by'),
+                    'penugasan_id' => $request->input('penugasan'),
+                    'file' => $request->input('file'),
+                    'acc' => $request->input('acc'),
+                    'deskripsi' => $request->input('deskripsi'),
                 ]);
+                User::create([
+                    'email' =>$request->input('email_pegawai'),
+                    'password' =>$request->input('password'),
+                    'name' =>$request->input('username'),
+                ]);
+            });
 
             return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil ditambahkan']);
         } catch (QueryException $th) {
@@ -57,10 +70,10 @@ class JabatanController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Jabatan  $jabatan
+     * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function show(Jabatan $jabatan)
+    public function show(File $file)
     {
         //
     }
@@ -68,52 +81,36 @@ class JabatanController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\Jabatan  $jabatan
+     * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(File $file)
     {
-        $jabatan = Jabatan ::findOrfail ($id);
-        $data =[
-        'jabatan' => $jabatan
-    ];
-       return view ("jabatan.edit", $data);
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateJabatanRequest  $request
-     * @param  \App\Models\Jabatan  $jabatan
+     * @param  \App\Http\Requests\UpdateFileRequest  $request
+     * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateJabatanRequest $request, $id)
+    public function update(UpdateFileRequest $request, File $file)
     {
-        try {
-            DB::transaction (function () use ($request, $id) {
-                $jabatan = Jabatan::findOrFail($id);
-                $jabatan->nama_jabatan = $request->input('nama_jabatan');
-                // $jabatan->save();
-            });
-
-            return redirect()->route('jabatan.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
-        } catch (QueryException $th) {
-            dd($th);
-            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
-        }
-
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Jabatan  $jabatan
+     * @param  \App\Models\File  $file
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(File $file)
     {
         try {
-            Jabatan::destroy($id);
+            File::destroy($id);
             return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil dihapus']);
         } catch (QueryException $th) {
             dd($th);

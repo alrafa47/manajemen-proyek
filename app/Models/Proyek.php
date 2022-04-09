@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Proyek extends Model
 {
     use HasFactory;
+    protected $guarded = [];
     public function tugas()
     {
         return $this->hasMany(tugas::class);

@@ -13,7 +13,7 @@ class StoreProyekRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,18 @@ class StoreProyekRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'nama_proyek' => 'required',
+            'tgl_mulai' => 'required|date',
+            'tgl_selesai' => 'required|date',
+            'spk' => 'required',
+            'bast' => 'required',
+            'kontrak_kerja' => 'required',
+            'nama_klien' => 'required',
+            'tlp_klien' => 'required',
+            'alamat_klien' => 'required',
+            'pegawai' => 'required',
+            'lap_pendahuluan' => 'required',
+            'lap_akhir' => 'required',
         ];
     }
 }

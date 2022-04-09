@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Penugasan;
+use App\Models\Tugas;
 use App\Http\Requests\StorePenugasanRequest;
 use App\Http\Requests\UpdatePenugasanRequest;
+use Illuminate\Database\QueryException;
 
 class PenugasanController extends Controller
 {
@@ -15,7 +17,14 @@ class PenugasanController extends Controller
      */
     public function index()
     {
-        //
+        $penugasan = Penugasan::all();
+        $tugas = Tugas::all(); // untuk mengambil semua data tugas
+        // return view('tugas.index', compact('tugas', 'penugasan'));
+        $data =[
+            'penugasan' => $penugasan,
+            'tugas' => $tugas
+        ];
+        return view('penugasan.index',$data);
     }
 
     /**
@@ -36,7 +45,25 @@ class PenugasanController extends Controller
      */
     public function store(StorePenugasanRequest $request)
     {
-        //
+        try {
+            DB::transaction(function () {
+                Penugasan::create([
+                    'tugas_id' => $request->input('tugas'),
+                    'judul_tugas' => $request->input('judul_tugas'),
+                    'deskripsi_tugas' => $request->input('deskripsi_tugas'),
+                ]);
+                User::create([
+                    'email' =>$request->input('email_pegawai'),
+                    'password' =>$request->input('password'),
+                    'name' =>$request->input('username'),
+                ]);
+            });
+
+            return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil ditambahkan']);
+        } catch (QueryException $th) {
+            dd($th);
+            // return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal ditambahkan']);
+        }
     }
 
     /**
@@ -81,6 +108,12 @@ class PenugasanController extends Controller
      */
     public function destroy(Penugasan $penugasan)
     {
-        //
+        try {
+            Penugasan::destroy($id);
+            return redirect()->back()->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil dihapus']);
+        } catch (QueryException $th) {
+            dd($th);
+            // return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal ditambahkan']);
+        }
     }
 }

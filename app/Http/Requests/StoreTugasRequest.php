@@ -13,7 +13,7 @@ class StoreTugasRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,11 @@ class StoreTugasRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'bidangkeahlian' => 'required',
+            'pegawai' => 'required',
+            'proyek' => 'required',
+            'tgl_mulai' => 'required|date',
+            'tgl_selesai' => 'required|date',
         ];
     }
 }
