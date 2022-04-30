@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\QueryException;
 use App\Http\Requests\StorePegawaiRequest;
 use App\Http\Requests\UpdatePegawaiRequest;
+use Illuminate\Support\Facades\Hash;
 
 class PegawaiController extends Controller
 {
@@ -60,7 +61,7 @@ class PegawaiController extends Controller
                 ]);
                 $pegawai->user()->create([
                     'email' => $request->input('email_pegawai'),
-                    'password' => $request->input('password'),
+                    'password' => Hash::make($request->input('password')),
                     'name' => $request->input('username'),
                 ]);
             });

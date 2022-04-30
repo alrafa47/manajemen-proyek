@@ -94,7 +94,7 @@ class ProyekController extends Controller
     {
         $proyek = Proyek ::findOrfail ($id);
         $pegawai = Pegawai::all();
-        $tugas = tugas::all();
+        $tugas = Tugas::all();
         $data =[
         'proyek' => $proyek,
         'pegawai' => $pegawai,

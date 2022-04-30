@@ -13,6 +13,7 @@
                 {{ session('pesan')->message }}
             </div>
         @endif
+        @if (Auth::user()->role == 'pegawai')
         <form action="{{ route('tugas.store') }}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
             @csrf
             <div class="card-body">

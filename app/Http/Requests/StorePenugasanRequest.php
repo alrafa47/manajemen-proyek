@@ -25,7 +25,7 @@ class StorePenugasanRequest extends FormRequest
     {
         return [
             'pegawai' => 'required',
-            'tugas' => 'required|numeric',
+            // 'tugas' => 'required',
             'judul_tugas' => 'required',
             'deskripsi_tugas' => 'required',
 

@@ -94,7 +94,7 @@ class PenugasanController extends Controller
         'penugasan' => $penugasan,
         'tugas' => $tugas,
         'file' => $file,
-        'pegawai' =>$pegawai
+        'pegawai' =>$pegawai,
     ];
        return view ("penugasan.edit", $data);
     }
@@ -118,7 +118,7 @@ class PenugasanController extends Controller
                 $penugasan->save();
             });
 
-            return redirect()->route('$penugasan.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
+            return redirect()->route('penugasan.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
         } catch (QueryException $th) {
             dd($th);
             return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
@@ -132,7 +132,7 @@ class PenugasanController extends Controller
      * @param  \App\Models\Penugasan  $penugasan
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Penugasan $penugasan, $id)
+    public function destroy($id)
     {
         try {
             Penugasan::destroy($id);

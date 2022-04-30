@@ -13,16 +13,10 @@
                 {{ session('pesan')->message }}
             </div>
         @endif
+        @if (Auth::user()->role == 'admin')
         <form action="{{ route('bidangkeahlian.store') }}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
-                {{-- <div class="form-group">
-                    <label for="exampleInputPassword1">Id</label>
-                    <input type="text" class="form-control" id="exampleInputPassword1" name="id_jabatan">
-                    @error('id_jabatan')
-                        <span class="text-danger text-muted">{{ $message }}</span>
-                    @enderror
-                </div> --}}
                 <div class="form-group">
                     <label for="exampleInputPassword1">Nama Bidang Keahlian</label>
                     <input type="text" class="form-control" id="exampleInputPassword1" name="nama_bk">

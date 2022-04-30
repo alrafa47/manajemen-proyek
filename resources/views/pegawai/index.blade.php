@@ -13,16 +13,10 @@
                 {{ session('pesan')->message }}
             </div>
         @endif
+        @if (Auth::user()->role == 'admin')
         <form action="{{ route('pegawai.store') }}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
-                <div class="form-group">
-                    <label for="exampleInputPassword1">Id</label>
-                    <input type="text" class="form-control" id="exampleInputPassword1" name="id_pegawai">
-                    @error('id_pegawai')
-                        <span class="text-danger text-muted">{{ $message }}</span>
-                    @enderror
-                </div>
                 <div class="form-group">
                     <label for="exampleInputPassword1">Nama</label>
                     <input type="text" class="form-control" id="exampleInputPassword1" name="nama_pegawai">
@@ -101,42 +95,48 @@
             <!-- /.card-body -->
         </form>
         <hr>
+        @endif
         <h3>List Pegawai</h3>
         <table id="example1" class="table table-bordered table-striped responsive">
             <thead>
             <tr>
                 <th>No</th>
-                <th>Id</th>
                 <th>Nama</th>
                 <th>Telepon</th>
                 <th>Jabatan</th>
                 <th>Kualifikasi</th>
-                <th>Action</th>
+                @if (Auth::user()->role == 'admin')
+                    <th>Action</th>
+        @endif
+
             </tr>
             </thead>
             <tbody>
             @forelse ($pegawai as $row )
                     <tr>
                         <td> {{ $loop->iteration }}</td>
-                        <td>{{$row->id}}</td>
+
                         <td>{{ $row->nama_pegawai }}</td>
                         <td>{{ $row->tlp_pegawai }}</td>
                         <td>{{ $row->jabatan->nama_jabatan }}</td>
                         <td>{{ $row->kualifikasi }}</td>
-
-                        <td>
-                            <div class="btn-group">
-                                <div class="d-flex">
-                                    <form action={{route('pegawai.destroy', ['id'=>$row->id])}} method="POST">
-                                        @csrf
-                                        @method('delete')
-                                        <button class="btn btn-danger">hapus</button>
-                                    </form>
-                                    <a class="btn btn-warning" href={{route('pegawai.edit', ['id'=>$row->id])}}>ubah
-                                    </a>
+                        @if (Auth::user()->role == 'admin')
+                            <td>
+                                <div class="btn-group">
+                                    <div class="d-flex">
+                                        <form action={{route('pegawai.destroy', ['id'=>$row->id])}} method="POST">
+                                            @csrf
+                                            @method('delete')
+                                            <button class="btn btn-danger">hapus</button>
+                                        </form>
+                                        <a class="btn btn-warning" href={{route('pegawai.edit', ['id'=>$row->id])}}>ubah
+                                        </a>
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
+                            </td>
+        @endif
+
+
                     </tr>
             @empty
                     <tr>

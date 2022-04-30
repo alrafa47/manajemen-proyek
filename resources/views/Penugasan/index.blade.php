@@ -13,6 +13,7 @@
                 {{ session('pesan')->message }}
             </div>
         @endif
+        @if (Auth::user()->role == 'pegawai')
         <form action="{{ route('penugasan.store') }}" method="post" accept-charset="utf-8" enctype="multipart/form-data">
             @csrf
             <div class="card-body">
@@ -29,19 +30,6 @@
                         <span class="text-danger text-muted">{{ $message }}</span>
                     @enderror
                 </div>
-                {{-- <div class="form-group">
-                    <label for="exampleInputPassword1">Id Tugas </label>
-                    <select class="form-control" name="tugas">
-                        @forelse ($tugas as $dataTugas)
-                            <option value="{{ $dataTugas->id }}">{{ $dataTugas->tugas_id }}</option>
-                        @empty
-                            <option value="">Data Kosong</option>
-                        @endforelse
-                    </select>
-                    @error('tugas')
-                        <span class="text-danger text-muted">{{ $message }}</span>
-                    @enderror
-                </div> --}}
                 <div class="form-group">
                     <label for="exampleInputPassword1">Judul Tugas</label>
                     <input type="text" class="form-control" id="exampleInputPassword1" name="judul_tugas">
@@ -68,7 +56,6 @@
             <tr>
                 <th>No</th>
                 <th>Nama Pegawai</th>
-                {{-- <th>Id Tugas</th> --}}
                 <th>Judul Tugas</th>
                 <th>Deskripsi</th>
                 <th>Action</th>
@@ -79,7 +66,6 @@
                     <tr>
                         <td> {{ $loop->iteration }}</td>
                         <td>{{ $row->pegawai->nama_pegawai }}</td>
-                        {{-- <td>{{ $row->tugas->tugas_id }}</td> --}}
                         <td>{{ $row->judul_tugas }}</td>
                         <td>{{ $row->deskripsi_tugas }}</td>
 

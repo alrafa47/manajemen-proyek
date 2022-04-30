@@ -2,7 +2,7 @@
     <!-- Brand Logo -->
     {{-- <a href="{{route('home')}}" class="brand-link">
       <img src="{{ asset('dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">SKL-Digital</span>
+      <span class="brand-text font-weight-light">Management Proyek</span>
     </a> --}}
 
     <!-- Sidebar -->
@@ -13,7 +13,7 @@
           <img src="{{ asset('dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block">Alexander Pierce</a>
+          <a href="#" class="d-block">{{ Auth::user()->name }}</a>
         </div>
       </div>
 
@@ -34,50 +34,19 @@
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-          <li class="nav-item menu-close">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Mastering
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{route('pegawai.index')}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Pegawai</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                {{-- <a href="{{route('kelas')}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Kelas</p>
-                </a> --}}
-              </li>
-              <li class="nav-item">
-                {{-- <a href="{{route('siswa')}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Siswa</p>
-                </a> --}}
-              </li>
-              <li class="nav-item">
-                {{-- <a href="{{route('guru')}}" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Guru</p>
-                </a> --}}
-              </li>
-            </ul>
-          </li>
-          <li class="nav-item">
-            {{-- <a href="{{route('tahunajaran')}}" class="nav-link">
-              <i class="nav-icon far fa-calendar-alt"></i>
-              <p>
-                Tahun Ajaran
-                <span class="badge badge-info right"></span>
-              </p>
-            </a> --}}
-          </li>
+        @switch(Auth::user()->role)
+            @case('admin')
+              @include('partial.sidebar-role.admin')
+                @break
+            @case('direktur')
+              @include('partial.sidebar-role.direktur')
+                @break
+            @case('pegawai')
+              @include('partial.sidebar-role.pegawai')
+                @break
+            @default
+
+        @endswitch
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

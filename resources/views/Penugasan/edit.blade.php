@@ -17,21 +17,6 @@
             @csrf
             @method ('put')
             <div class="card-body">
-                {{-- <div class="form-group">
-                    <label for="exampleInputPassword1">Id Tugas </label>
-                    <select class="form-control" name="tugas">
-                        @forelse ($tugas as $dataTugas)
-                            <option value="{{ $dataTugas->id }}"
-                            {{ $penugasan->tugas_id == $dataTugas->id ? 'selected' : ''}}>
-                            {{ $dataTugas->tugas_id }}</option>
-                        @empty
-                            <option value="">Data Kosong</option>
-                        @endforelse
-                    </select>
-                    @error('tugas')
-                        <span class="text-danger text-muted">{{ $message }}</span>
-                    @enderror
-                </div> --}}
                 <div class="form-group">
                     <label for="exampleInputPassword1">Nama Pegawai </label>
                     <select class="form-control" name="pegawai">
