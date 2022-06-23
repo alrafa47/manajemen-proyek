@@ -63,6 +63,7 @@ class PegawaiController extends Controller
                     'email' => $request->input('email_pegawai'),
                     'password' => Hash::make($request->input('password')),
                     'name' => $request->input('username'),
+                    'role' => 'pegawai',
                 ]);
             });
 
@@ -92,13 +93,13 @@ class PegawaiController extends Controller
      */
     public function edit($id)
     {
-       $pegawai = Pegawai ::findOrfail ($id);
-       $jabatan = Jabatan::all();
-       $data =[
-        'pegawai' => $pegawai,
-        'jabatan' => $jabatan
-    ];
-       return view ("pegawai.edit", $data);
+        $pegawai = Pegawai::findOrfail($id);
+        $jabatan = Jabatan::all();
+        $data = [
+            'pegawai' => $pegawai,
+            'jabatan' => $jabatan
+        ];
+        return view("pegawai.edit", $data);
     }
 
     /**
@@ -111,7 +112,7 @@ class PegawaiController extends Controller
     public function update(UpdatePegawaiRequest $request, $id)
     {
         try {
-            DB::transaction (function () use ($request, $id) {
+            DB::transaction(function () use ($request, $id) {
                 $pegawai = Pegawai::findOrFail($id);
                 $pegawai->nama_pegawai = $request->input('nama_pegawai');
                 $pegawai->jenis_kelamin = $request->input('jenis_kelamin');
@@ -129,9 +130,8 @@ class PegawaiController extends Controller
             return redirect()->route('pegawai.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
         } catch (QueryException $th) {
             dd($th);
-            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
+            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' => 'data gagal diupdate']);
         }
-
     }
 
     /**

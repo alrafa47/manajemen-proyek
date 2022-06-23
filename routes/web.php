@@ -64,16 +64,18 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::get('/penugasan', [PenugasanController::class, 'index'])->name('penugasan.index');
+    Route::get('/penugasan/{tugas_id}/add', [PenugasanController::class, 'create'])->name('penugasan.create');
     Route::middleware('role:pegawai')->group(function () {
-        Route::post('/penugasan', [PenugasanController::class, 'store'])->name('penugasan.store');
+        Route::post('/penugasan/{tugas_id}', [PenugasanController::class, 'store'])->name('penugasan.store');
         Route::delete('/penugasan/{id}', [PenugasanController::class, 'destroy'])->name('penugasan.destroy');
         Route::get('/penugasan/{id}', [PenugasanController::class, 'edit'])->name('penugasan.edit');
         Route::put('/penugasan/{id}', [PenugasanController::class, 'update'])->name('penugasan.update');
     });
 
     Route::get('/tugas', [TugasController::class, 'index'])->name('tugas.index');
+    Route::get('/tugas/{proyek_id}/add', [TugasController::class, 'create'])->name('tugas.create');
+    Route::post('/tugas/{proyek_id}', [TugasController::class, 'store'])->name('tugas.store');
     Route::middleware('role:pegawai')->group(function () {
-        Route::post('/tugas', [TugasController::class, 'store'])->name('tugas.store');
         Route::delete('/tugas/{id}', [TugasController::class, 'destroy'])->name('tugas.destroy');
         Route::get('/tugas/{id}', [TugasController::class, 'edit'])->name('tugas.edit');
         Route::put('/tugas/{id}', [TugasController::class, 'update'])->name('tugas.update');

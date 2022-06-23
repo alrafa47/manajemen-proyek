@@ -8,6 +8,7 @@ use App\Models\Tugas;
 use App\Http\Requests\StoreProyekRequest;
 use App\Http\Requests\UpdateProyekRequest;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProyekController extends Controller
@@ -19,15 +20,24 @@ class ProyekController extends Controller
      */
     public function index()
     {
-        $proyek = Proyek::all();
-        $pegawai = Pegawai::all(); // untuk mengambil semua data pegawai
-        // return view('pegawai.index', compact('pegawai', 'jabatan'));
-        $data =[
-            'proyek' => $proyek,
-            'pegawai' => $pegawai
-        ];
-        return view('proyek.index',$data);
-
+        if (Auth::user()->role == 'admin') {
+            $proyek = Proyek::all();
+            $pegawai = Pegawai::all();
+            $data = [
+                'proyek' => $proyek,
+                'pegawai' => $pegawai
+            ];
+        } else if (Auth::user()->role == 'pegawai') {
+            $proyek = Proyek::whereHas('tugas', function ($query) {
+                $query->where('pegawai_id', Auth::user()->userable_id);
+            })
+                ->orWhere('pegawai_id', Auth::user()->userable_id)
+                ->get();
+            $data = [
+                'proyek' => $proyek,
+            ];
+        }
+        return view('proyek.index', $data);
     }
 
     /**
@@ -49,7 +59,7 @@ class ProyekController extends Controller
     public function store(StoreProyekRequest $request)
     {
         try {
-            DB::transaction(function () use ($request)  {
+            DB::transaction(function () use ($request) {
                 Proyek::create([
                     'nama_proyek' => $request->input('nama_proyek'),
                     'tgl_mulai' => $request->input('tgl_mulai'),
@@ -92,15 +102,15 @@ class ProyekController extends Controller
      */
     public function edit($id)
     {
-        $proyek = Proyek ::findOrfail ($id);
+        $proyek = Proyek::findOrfail($id);
         $pegawai = Pegawai::all();
         $tugas = Tugas::all();
-        $data =[
-        'proyek' => $proyek,
-        'pegawai' => $pegawai,
-        'tugas' => $tugas,
-    ];
-       return view ("proyek.edit", $data);
+        $data = [
+            'proyek' => $proyek,
+            'pegawai' => $pegawai,
+            'tugas' => $tugas,
+        ];
+        return view("proyek.edit", $data);
     }
 
     /**
@@ -113,7 +123,7 @@ class ProyekController extends Controller
     public function update(UpdateProyekRequest $request, $id)
     {
         try {
-            DB::transaction (function () use ($request, $id) {
+            DB::transaction(function () use ($request, $id) {
                 $proyek = Proyek::findOrFail($id);
                 $proyek->nama_proyek = $request->input('nama_proyek');
                 $proyek->tgl_mulai = $request->input('tgl_mulai');
@@ -128,15 +138,13 @@ class ProyekController extends Controller
                 $proyek->lap_pendahuluan = $request->input('lap_pendahuluan');
                 $proyek->lap_akhir = $request->input('lap_akhir');
                 $proyek->save();
-
             });
 
             return redirect()->route('proyek.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
         } catch (QueryException $th) {
             dd($th);
-            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
+            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' => 'data gagal diupdate']);
         }
-
     }
 
     /**

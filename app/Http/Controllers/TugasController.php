@@ -20,19 +20,6 @@ class TugasController extends Controller
      */
     public function index()
     {
-        $tugas = Tugas::with('proyek')->get();
-        $bidangkeahlian = Bidangkeahlian::all();
-        $proyek = Proyek::all();
-        $penugasan = Penugasan::all(); // untuk mengambil semua data pegawai
-        // return view('pegawai.index', compact('pegawai', 'jabatan'));
-        $data =[
-            'tugas' => $tugas,
-            'bidangkeahlian' => $bidangkeahlian,
-            'proyek' => $proyek,
-            'penugasan' => $penugasan,
-
-        ];
-        return view('tugas.index',$data);
     }
 
     /**
@@ -40,9 +27,17 @@ class TugasController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($proyek_id)
     {
-        //
+        $tugas = Tugas::with('Penugasan')->where('proyek_id', $proyek_id)->get();
+        $bidangkeahlian = Bidangkeahlian::all();
+        $proyek = Proyek::find($proyek_id);
+        $data = [
+            'tugas' => $tugas,
+            'bidangkeahlian' => $bidangkeahlian,
+            'proyek' => $proyek,
+        ];
+        return view('tugas.add', $data);
     }
 
     /**
@@ -51,13 +46,13 @@ class TugasController extends Controller
      * @param  \App\Http\Requests\StoreTugasRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreTugasRequest $request)
+    public function store(StoreTugasRequest $request, $proyek_id)
     {
         try {
-            DB::transaction(function () use ($request) {
+            DB::transaction(function () use ($request, $proyek_id) {
                 Tugas::create([
                     'bidangkeahlian_id' => $request->input('bidangkeahlian'),
-                    'proyek_id' => $request->input('proyek'),
+                    'proyek_id' => $proyek_id,
                     'tgl_mulai' => $request->input('tgl_mulai'),
                     'tgl_selesai' => $request->input('tgl_selesai'),
                 ]);
@@ -79,7 +74,6 @@ class TugasController extends Controller
      */
     public function show(Tugas $tugas)
     {
-
     }
 
     /**
@@ -90,17 +84,17 @@ class TugasController extends Controller
      */
     public function edit($id)
     {
-        $tugas = Tugas ::findOrfail ($id);
+        $tugas = Tugas::findOrfail($id);
         $bidangkeahlian = Bidangkeahlian::all();
         $proyek = Proyek::all();
         $penugasan = Penugasan::all();
-        $data =[
-        'tugas' => $tugas,
-        'bidangkeahlian' => $bidangkeahlian,
-        'proyek' => $proyek,
-        'penugasan' => $penugasan,
-    ];
-       return view ("tugas.edit", $data);
+        $data = [
+            'tugas' => $tugas,
+            'bidangkeahlian' => $bidangkeahlian,
+            'proyek' => $proyek,
+            'penugasan' => $penugasan,
+        ];
+        return view("tugas.edit", $data);
     }
 
     /**
@@ -113,22 +107,20 @@ class TugasController extends Controller
     public function update(UpdateTugasRequest $request, $id)
     {
         try {
-            DB::transaction (function () use ($request, $id) {
+            DB::transaction(function () use ($request, $id) {
                 $tugas = Tugas::findOrFail($id);
                 $tugas->bidangkeahlian_id = $request->input('bidangkeahlian');
                 $tugas->proyek_id = $request->input('proyek');
                 $tugas->tgl_mulai = $request->input('tgl_mulai');
                 $tugas->tgl_selesai = $request->input('tgl_selesai');
                 $tugas->save();
-
             });
 
             return redirect()->route('tugas.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
         } catch (QueryException $th) {
             dd($th);
-            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
+            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' => 'data gagal diupdate']);
         }
-
     }
 
     /**

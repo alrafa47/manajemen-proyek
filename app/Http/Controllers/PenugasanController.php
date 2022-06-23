@@ -20,16 +20,6 @@ class PenugasanController extends Controller
      */
     public function index()
     {
-        $penugasan = Penugasan::all();
-        $tugas = Tugas::all();
-        $pegawai = Pegawai::all(); // untuk mengambil semua data tugas
-        // return view('tugas.index', compact('tugas', 'penugasan'));
-        $data =[
-            'penugasan' => $penugasan,
-            'tugas' => $tugas,
-            'pegawai' => $pegawai
-        ];
-        return view('penugasan.index',$data);
     }
 
     /**
@@ -37,9 +27,18 @@ class PenugasanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($tugas_id)
     {
-        //
+        $penugasan = Penugasan::all();
+        $tugas = Tugas::all();
+        $pegawai = Pegawai::all();
+        $data = [
+            'penugasan' => $penugasan,
+            'tugas' => $tugas,
+            'pegawai' => $pegawai,
+            'tugas_id' => $tugas_id
+        ];
+        return view('penugasan.index', $data);
     }
 
     /**
@@ -48,13 +47,13 @@ class PenugasanController extends Controller
      * @param  \App\Http\Requests\StorePenugasanRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StorePenugasanRequest $request)
+    public function store(StorePenugasanRequest $request, $tugas_id)
     {
         try {
-            DB::transaction(function () use ($request) {
+            DB::transaction(function () use ($request, $tugas_id) {
                 Penugasan::create([
                     'pegawai_id' => $request->input('pegawai'),
-                    'tugas_id' => $request->input('tugas'),
+                    'tugas_id' => $tugas_id,
                     'judul_tugas' => $request->input('judul_tugas'),
                     'deskripsi_tugas' => $request->input('deskripsi_tugas'),
                 ]);
@@ -86,17 +85,17 @@ class PenugasanController extends Controller
      */
     public function edit($id)
     {
-        $penugasan = Penugasan ::findOrfail ($id);
+        $penugasan = Penugasan::findOrfail($id);
         $tugas = Tugas::all();
         $file = File::all();
         $pegawai = Pegawai::all();
-        $data =[
-        'penugasan' => $penugasan,
-        'tugas' => $tugas,
-        'file' => $file,
-        'pegawai' =>$pegawai,
-    ];
-       return view ("penugasan.edit", $data);
+        $data = [
+            'penugasan' => $penugasan,
+            'tugas' => $tugas,
+            'file' => $file,
+            'pegawai' => $pegawai,
+        ];
+        return view("penugasan.edit", $data);
     }
 
     /**
@@ -109,7 +108,7 @@ class PenugasanController extends Controller
     public function update(UpdatePenugasanRequest $request, $id)
     {
         try {
-            DB::transaction (function () use ($request, $id) {
+            DB::transaction(function () use ($request, $id) {
                 $penugasan = Penugasan::findOrFail($id);
                 $penugasan->pegawai_id = $request->input('pegawai');
                 $penugasan->tugas_id = $request->input('tugas');
@@ -121,9 +120,8 @@ class PenugasanController extends Controller
             return redirect()->route('penugasan.index')->with('pesan', (object)['status' => 'success', 'message' => 'data berhasil diupdate']);
         } catch (QueryException $th) {
             dd($th);
-            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' =>'data gagal diupdate']);
+            return redirect()->back()->with('pesan', (object)['status' => 'danger', 'message' => 'data gagal diupdate']);
         }
-
     }
 
     /**

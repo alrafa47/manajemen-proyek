@@ -24,7 +24,6 @@ class StorePegawaiRequest extends FormRequest
     public function rules()
     {
         return [
-            'id_pegawai' => 'required|numeric',
             'nama_pegawai' => 'required|string',
             'tlp_pegawai' => 'required',
             'jenis_kelamin' => 'required',
